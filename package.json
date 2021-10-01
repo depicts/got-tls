@@ -1,6 +1,6 @@
 {
-  "name": "gotttt",
-  "version": "1.0.1",
+  "name": "got-tls",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "files": [
