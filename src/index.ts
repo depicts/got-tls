@@ -234,6 +234,9 @@ export const got = async (
     if (redirects >= 20) {
       responseEmitter?.emit("error", "Too Many Redirects Error");
     } else {
+      options.body = undefined
+      options.json = undefined
+      options.form = undefined
       got("GET", data, options, responseEmitter, redirects);
     }
   });

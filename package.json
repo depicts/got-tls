@@ -2,9 +2,9 @@
   "name": "got-tls",
   "version": "1.0.0",
   "description": "",
-  "main": "build/src/index.js",
+  "main": "dist/src/index.js",
   "files": [
-    "/build"
+    "dist/**/*"
   ],
   "scripts": {
     "build": "tsc",
