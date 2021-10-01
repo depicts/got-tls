@@ -3,10 +3,6 @@
 A node websocket api version of https://github.com/Carcraftz/TLS-Fingerprint-API to spoof TLS fingerprint to prevent your requests from being fingerprinted. 
 > im fairly new to golang / websockets pull requests are welcome 
 
-## Installation
-
-```npm i https://github.com/evade99/got-tls```
-
 ## Usage
 
 Server
