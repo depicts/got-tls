@@ -1,10 +1,10 @@
 {
-  "name": "got-tls",
-  "version": "1.0.0",
+  "name": "gotttt",
+  "version": "1.0.1",
   "description": "",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "files": [
-    "dist/**/*"
+    "/dist"
   ],
   "scripts": {
     "build": "tsc",

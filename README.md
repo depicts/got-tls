@@ -1,54 +1,41 @@
-# WIP NOT BUILT WONT WORK AS IS
-
-# gotTLS 
+# got-tls
 
 A node websocket api version of https://github.com/Carcraftz/TLS-Fingerprint-API to spoof TLS fingerprint to prevent your requests from being fingerprinted. 
-WIP - im fairly new to golang / websockets 
+> im fairly new to golang / websockets pull requests are welcome 
+
+## Installation
+
+```npm i https://github.com/evade99/got-tls```
 
 ## Usage
 
-Get
+Server
+``connect``
+
+To Start The Proxy Server Simply Import Server From The Package And Call The connect() Function. This Should Be Done Once In Your Project.
+
+> Server.isConnected - return boolean whether or not the server has started and our websocket has connected
 
 ```js
-  import { gotTLS } from 'gotTLS'
+  const { Server } = require('got-tls')
 
-    let response = await gotTLS("GET", "https://ja3er.com/json",{
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
-      },
-    });
-
-    console.log(response.statusCode)
-    //=> 200
-
-    console.log(response.data)
-    //=> {"ja3_hash":"b32309a26951912be7dba376398abc3b", "ja3": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-21,29-23-24,0", "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"}
+  Server.connect()
 ```
 
-Post
+Request
+``GET`` ``POST`` ``PUT`` ``PATCH`` ``HEAD`` ``DELETE`` ``OPTIONS`` ``TRACE``
 
 ```js
-  import { gotTLS } from 'gotTLS'
-
-    let response = await gotTLS("POST", "https://ja3er.com/json",{
+  import { got } from 'got-tls'
+  
+  let response = await got.get('https://httpbin.org/anything', {
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
-      },
-      json: {
-        "username": "evade"
+          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"
       }
-    });
+  })
 ```
 
-## gotTLS(method, url, options)
-
-method
-
-``Type: string``
-
-> The HTTP method used to make the request.
+## got(url, options)
 
 url
 
@@ -76,6 +63,18 @@ json
 
 > JSON body.
 
+body
+
+``Type: string``
+
+> Request body.
+
+form
+
+``Type: object``
+
+> Request form.
+
 CookieJar
 
 ``Type: tough.CookieJar instance``
@@ -102,4 +101,11 @@ Redirect
 ``Default: true``
 
 > whether or not to follow redirects
+
+Proxy
+
+``Type: string``
+``Default: null``
+
+> Proxy to use for request e.g http://user:pass@ip:port
 
