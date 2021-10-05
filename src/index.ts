@@ -10,6 +10,7 @@ import { FormDataEncoder, isFormDataLike } from "form-data-encoder";
 import { v4 as uuidv4 } from "uuid";
 import PubSub from "pubsub-js";
 import { URLSearchParams } from "url";
+const {CookieJar} = require('tough-cookie');
 
 export const Server = new Proxy();
 
@@ -128,14 +129,16 @@ export const got = async (
         options.headers["content-type"] = encoder.headers["Content-Type"];
       }
       request.body = encoder.encode().toString();
+    }else {
+      request.body = options.body
     }
   } else if (options.form) {
     if (!hasContentType) {
       options.headers["content-type"] = "application/x-www-form-urlencoded";
-      request.body = new URLSearchParams(
-        options.form as Record<string, string>
-      ).toString();
     }
+    request.body = new URLSearchParams(
+      options.form as Record<string, string>
+    ).toString();
   }
 
   if (options.redirect) {
@@ -179,9 +182,10 @@ export const got = async (
            */
           if (
             header === "Set-Cookie" &&
-            typeof header === "object" &&
+            typeof data.headers["Set-Cookie"] === "object" &&
             Array.isArray(data.headers["Set-Cookie"])
           ) {
+            console.log(data.headers)
             if (options.cookieJar) {
               let promises: Array<Promise<unknown>> = data.headers[
                 "Set-Cookie"
@@ -194,8 +198,8 @@ export const got = async (
               try {
                 await Promise.all(promises);
               } catch (error: any) {}
-              finalHeaders["Set-Cookie"] = data.headers["Set-Cookie"].join(",");
             }
+            finalHeaders["Set-Cookie"] = data.headers["Set-Cookie"].join(", ");
           } else {
             finalHeaders[header] = data.headers[header][0];
           }
