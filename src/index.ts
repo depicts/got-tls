@@ -10,7 +10,6 @@ import { FormDataEncoder, isFormDataLike } from "form-data-encoder";
 import { v4 as uuidv4 } from "uuid";
 import PubSub from "pubsub-js";
 import { URLSearchParams } from "url";
-const {CookieJar} = require('tough-cookie');
 
 export const Server = new Proxy();
 
