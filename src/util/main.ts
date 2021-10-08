@@ -66,6 +66,8 @@ export class Proxy {
     let executableFilename = "";
     if (process.platform == "win32") {
       executableFilename = "got-tls-proxy.exe";
+    } else if (process.platform == "linux") {
+      executableFilename = "got-tls-proxy-linux";
     } else if (process.platform == "darwin") {
       executableFilename = "got-tls-proxy";
     } else {
