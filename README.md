@@ -2,7 +2,10 @@
 
 A node websocket api version of https://github.com/Carcraftz/TLS-Fingerprint-API to spoof TLS fingerprint to prevent your requests from being fingerprinted. 
 > im fairly new to golang / websockets pull requests are welcome 
+ 
+> building instructions coming soon
 
+> currently only windows / linux. Mac support coming soon
 ## Usage
 
 Server
@@ -71,7 +74,7 @@ form
 
 > Request form.
 
-CookieJar
+cookieJar
 
 ``Type: tough.CookieJar instance``
 

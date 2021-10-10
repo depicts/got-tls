@@ -1,6 +1,6 @@
 {
   "name": "got-tls",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "A node websocket api version of https://github.com/Carcraftz/TLS-Fingerprint-API to spoof TLS fingerprint to prevent your requests from being fingerprinted. \r > im fairly new to golang / websockets pull requests are welcome",
   "main": "dist/index.js",
   "files": [
