@@ -1,4 +1,4 @@
-import { sleep, getBaseUrl, Proxy } from "./util/main";
+import { sleep, getBaseUrl, startServer, CONNECTED, BACKEND } from "./util/main";
 import type {
   RequestOptions,
   ResponseData,
@@ -11,7 +11,9 @@ import { v4 as uuidv4 } from "uuid";
 import PubSub from "pubsub-js";
 import { URLSearchParams } from "url";
 
-export const Server = new Proxy();
+export const Server = {
+  connect: startServer,
+};
 
 const validMethods = [
   "GET",
@@ -60,7 +62,7 @@ export const got = async (
 
   let timeWaited = 0;
 
-  while (!Server.isConnected) {
+  while (!CONNECTED) {
     (await sleep(100)) && (timeWaited += 100);
     if (timeWaited > 10000) {
       responseEmitter.emit("error", `Proxy Client Took Too Long To Connect!`);
@@ -225,7 +227,7 @@ export const got = async (
     }
   });
 
-  Server.client.send(JSON.stringify(request));
+  BACKEND.send(JSON.stringify(request));
 
   /**
    * handle redirect and pass in the initial response emitter and

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/fatih/color"
@@ -111,26 +110,26 @@ func setupRoutes() {
 
 func main() {
 
-	var rLimit syscall.Rlimit
-	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+	// var rLimit syscall.Rlimit
+	// err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
 
-	if err != nil {
-		logger("error", "Error Getting Rlimit "+err.Error())
-	}
+	// if err != nil {
+	// 	logger("error", "Error Getting Rlimit "+err.Error())
+	// }
 
-	rLimit.Max = 64000
-	rLimit.Cur = 64000
+	// rLimit.Max = 64000
+	// rLimit.Cur = 64000
 
-	err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+	// err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
 
-	if err != nil {
-		logger("error", "Error Setting Rlimit "+err.Error())
-	}
+	// if err != nil {
+	// 	logger("error", "Error Setting Rlimit "+err.Error())
+	// }
 
-	err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-	if err != nil {
-		logger("error", "Error Getting Rlimit "+err.Error())
-	}
+	// err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+	// if err != nil {
+	// 	logger("error", "Error Getting Rlimit "+err.Error())
+	// }
 
 	setupRoutes()
 

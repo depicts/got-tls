@@ -1,14 +1,11 @@
 import { spawn, exec, ChildProcessWithoutNullStreams } from "child_process";
 import type { ResponseData } from "../interface";
-import { EventEmitter } from "events";
 import { join } from "path";
 import PubSub from "pubsub-js";
 import getPort from "get-port";
 const W3CWebSocket = require("websocket").w3cwebsocket;
 
 let child: ChildProcessWithoutNullStreams;
-
-let connectionEmitter = new EventEmitter();
 
 const cleanExit = async (message?: string | Error) => {
   if (!child) return;
@@ -42,26 +39,47 @@ process.on("SIGINT", () => cleanExit());
 
 process.on("SIGTERM", () => cleanExit());
 
-export class Proxy {
-  client: any;
-  isConnected: boolean;
-  port: number;
+export let BACKEND: any
+let PORT: number
+export let CONNECTED = false
 
-  constructor() {
-    this.isConnected = false;
-    this.port = 5600;
-  }
+const connectToServer = async () => {
+  try {
+    await sleep(500)
 
-  async connect() {
-    connectionEmitter.on("connection", (connection: boolean) => {
-      this.isConnected = connection;
-    });
+    BACKEND = new W3CWebSocket(`ws://localhost:${PORT}/client`)
 
-    this.port = await getPort();
+    BACKEND.onopen = function () {
+      console.log('Successfully Connnected To Backend Proxy')
+      CONNECTED = true
+    }
 
-    cleanExit();
+    BACKEND.onmessage = function (e: any) {
+      if (typeof e.data === "string") {
+        let responseData: ResponseData = JSON.parse(e.data);
+        PubSub.publish(responseData.id, responseData);
+      }
+    }
 
-    console.log("Starting Server...");
+    BACKEND.onclose = function () {
+      console.log('Backend Proxy Client Closed Error! Retrying Connection...')
+      CONNECTED = false
+      connectToServer()
+    }
+
+    BACKEND.onerror = function () {
+      console.log('Backend Proxy Connection Error! Retrying Connection...')
+      CONNECTED = false
+      // connectToServer()
+    }
+  } catch (e) {}
+}
+
+export const startServer = async () => {
+  try {
+    PORT = await getPort()
+
+    console.log('Starting Server...')
 
     let executableFilename = "";
     if (process.platform == "win32") {
@@ -71,49 +89,22 @@ export class Proxy {
     } else if (process.platform == "darwin") {
       executableFilename = "got-tls-proxy";
     } else {
-      cleanExit(new Error("Operating system not supported"));
+      throw new Error("Operating system not supported");
     }
 
     child = spawn(join(__dirname, `../resources/${executableFilename}`), {
-      env: { PROXY_PORT: this.port.toString() },
+      env: { PROXY_PORT: PORT.toString() },
       shell: true,
       windowsHide: true,
       detached: process.platform !== "win32",
     });
 
-    await sleep(2000);
-
-    this.client = new W3CWebSocket(`ws://localhost:${this.port}/client`);
-
-    this.client.onopen = function () {
-      console.log("Successfully Connnected To Proxy");
-      connectionEmitter.emit("connection", true);
-    };
-
-    this.client.onmessage = function (e: any) {
-      if (typeof e.data === "string") {
-        let responseData: ResponseData = JSON.parse(e.data);
-        PubSub.publish(responseData.id, responseData);
-      }
-    };
-
-    this.client.onclose = function () {
-      console.log("gotTLS Proxy Client Closed Error! Retrying Connection...");
-      connectionEmitter.emit("connection", false);
-      setTimeout(() => {
-        this.client && this.client.connect();
-      }, 2000);
-    };
-
-    this.client.onerror = function () {
-      console.log("gotTLS Proxy Connection Error! Retrying Connection...");
-      connectionEmitter.emit("connection", false);
-      setTimeout(() => {
-        this.client && this.client.connect();
-      }, 2000);
-    };
+    await connectToServer()
+  } catch (e) {
+    console.log(e)
   }
 }
+
 
 const dir = "/";
 
